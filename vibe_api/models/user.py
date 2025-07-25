@@ -1,10 +1,9 @@
 import uuid
-from flask_sqlalchemy import SQLAlchemy
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy.dialects.postgresql import UUID, ENUM
 from sqlalchemy import CheckConstraint
+from vibe_api.db import db
 
-db = SQLAlchemy()
 
 gender_enum = ENUM('male', 'female', name='gender_type', create_type=False)
 

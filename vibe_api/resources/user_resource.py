@@ -1,7 +1,7 @@
-from flask_restful import Resource, reqparse, abort
-from vibe_api.models.user import db, UserModel, user_schema
-from sqlalchemy.exc import IntegrityError
 from uuid import UUID
+from flask_restful import Resource, reqparse, abort
+from vibe_api.models.user import UserModel, user_schema
+from vibe_api.db import db
 
 
 post_user_parser = reqparse.RequestParser()
