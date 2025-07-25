@@ -22,11 +22,7 @@ class UserResource(Resource):
             user_uuid = UUID(user_id, version=4)
         except ValueError:
             abort(400, message="Invalid UUID format")
-
-        user = UserModel.query.get(user_uuid)
-        if not user:
-            abort(404, message="User not found")
-        return user
+        return db.get_or_404(UserModel, user_uuid)
 
     def get(self, user_id):
         user = self.abort_if_user_id_is_invalid_or_return_user(user_id)
@@ -47,7 +43,7 @@ class UserResource(Resource):
             return user_schema.dump(user), 201
         except Exception as ie:
             db.session.rollback()
-            return {"error": str(ie)}, 409
+            return {"error": str(ie)}, 500
         
     def put(self, user_id):
         user = self.abort_if_user_id_is_invalid_or_return_user(user_id)
@@ -67,4 +63,15 @@ class UserResource(Resource):
             return user_schema.dump(user), 200
         except Exception as ie:
             db.session.rollback()
-            return {"error": str(ie)}, 409
+            return {"error": str(ie)}, 500
+
+    def delete(self, user_id):
+        user = self.abort_if_user_id_is_invalid_or_return_user(user_id)
+
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            return {}, 204
+        except Exception as ie:
+            db.session.rollback()
+            return {"error": str(ie)}, 500
