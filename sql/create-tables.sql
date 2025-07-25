@@ -12,14 +12,15 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE followings (
+CREATE TABLE follows (
 	user_from uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	user_to uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	created_at timestamptz NOT NULL DEFAULT now(),
 	PRIMARY KEY (user_from, user_to),
 	CHECK (user_from <> user_to)
 );
-CREATE INDEX idx_followings_user_to ON followings(user_to);
+CREATE INDEX idx_follows_user_from ON follows(user_from);
+CREATE INDEX idx_follows_user_to ON follows(user_to);
 
 
 CREATE TABLE posts (

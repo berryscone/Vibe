@@ -16,6 +16,9 @@ with app.app_context():
 
 api = Api(app)
 api.add_resource(UserResource, '/user', '/user/<string:user_id>')
+api.add_resource(FollowResource, '/follow')
+api.add_resource(FollowingsResource, '/followings/<string:user_id>')
+api.add_resource(FollowersResource, '/followers/<string:user_id>')
 
 if __name__ == "__main__":
     app.run(debug=True)
