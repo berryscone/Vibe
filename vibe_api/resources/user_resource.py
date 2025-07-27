@@ -17,13 +17,6 @@ put_user_parser.add_argument('age', type=int)
 put_user_parser.add_argument('gender', type=str)
 
 class UserResource(Resource):
-    def abort_if_user_id_is_invalid_or_return_user(self, user_id: str):
-        try:
-            user_uuid = UUID(user_id, version=4)
-        except ValueError:
-            abort(400, message="Invalid UUID format")
-        return db.get_or_404(UserModel, user_uuid)
-
     def get(self, user_id):
         user = self.abort_if_user_id_is_invalid_or_return_user(user_id)
         return user_schema.dump(user), 200
@@ -75,3 +68,11 @@ class UserResource(Resource):
         except Exception as ie:
             db.session.rollback()
             return {"error": str(ie)}, 500
+        
+    def abort_if_user_id_is_invalid_or_return_user(self, user_id: str):
+        try:
+            user_uuid = UUID(user_id, version=4)
+        except ValueError:
+            abort(400, message="Invalid UUID format")
+        return db.get_or_404(UserModel, user_uuid)
+
