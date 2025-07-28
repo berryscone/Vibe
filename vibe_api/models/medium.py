@@ -1,6 +1,8 @@
 import uuid
+import os
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from sqlalchemy.dialects.postgresql import UUID, ENUM
+from sqlalchemy.event import listens_for
 from vibe_api.db import db
 
 MEDIA_TYPE_IMAGE = 'image'
@@ -19,6 +21,16 @@ class MediumModel(db.Model):
     __table_args__ = (
         # db.CheckConstraint(r"media_url ~ '^https?://[^\s/$.?#].[^\s]*$'", name='check_valid_url'),
     )
+
+    def delete_local_file(self):
+        if not self.media_url or not os.path.exists(self.media_url):
+            return
+        os.remove(self.media_url)
+
+@listens_for(MediumModel, 'before_delete')
+def delete_file_on_row_delete(mapper, connection, target):
+    target.delete_local_file()
+
 
 class MediumScheme(SQLAlchemyAutoSchema):
     class Meta:
