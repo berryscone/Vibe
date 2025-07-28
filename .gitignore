@@ -1,6 +1,8 @@
 __pycache__/
+.pytest_cache
 .python-version
 .vscode
 .venv
 .env
 media
+test images
