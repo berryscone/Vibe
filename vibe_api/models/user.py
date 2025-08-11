@@ -5,7 +5,7 @@ from sqlalchemy import CheckConstraint
 from vibe_api.db import db
 
 
-gender_enum = ENUM('male', 'female', name='gender_type', create_type=False)
+gender_enum = ENUM('male', 'female', name='gender_type')
 
 class UserModel(db.Model):
     __tablename__ = 'users'
