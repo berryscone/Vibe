@@ -8,6 +8,7 @@ from vibe_api.resources.following_resource import FollowingsResource
 from vibe_api.resources.follower_resource import FollowersResource
 from vibe_api.resources.medium_resource import MediumResource
 from vibe_api.resources.post_resource import PostResource
+from vibe_api.resources.comment_resource import CommentResource
 
 
 def add_resources(app: Flask):
@@ -18,6 +19,7 @@ def add_resources(app: Flask):
     api.add_resource(FollowersResource, '/followers/<string:user_id>')
     api.add_resource(MediumResource, '/media/<string:medium_id>')
     api.add_resource(PostResource, '/post', '/post/<string:post_id>')
+    api.add_resource(CommentResource, '/comment', '/comment/<string:comment_id>')
 
 
 def create_app(is_test: bool=False):
