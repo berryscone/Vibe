@@ -1,6 +1,6 @@
 import uuid
 import os
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy.dialects.postgresql import UUID, ENUM
 from sqlalchemy.event import listens_for
 from vibe_api.db import db
