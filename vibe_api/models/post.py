@@ -1,19 +1,22 @@
 import uuid
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.event import listens_for
+from marshmallow_sqlalchemy.fields import Nested
 from vibe_api.db import db
-from vibe_api.models.medium import MediumScheme
+from vibe_api.models.user import UserModel
+from vibe_api.constants import OnDelete
+from vibe_api.models.medium import MediumModel, MediumScheme
 
+POST_CAPTION_LENGTH_LIMIT = 300
 
 class PostModel(db.Model):
     __tablename__ = 'posts'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    caption = db.Column(db.Text, nullable=True)
-    created_by = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True)
+    caption = db.Column(db.String(POST_CAPTION_LENGTH_LIMIT), nullable=True)
+    created_by = db.Column(UUID(as_uuid=True), db.ForeignKey(UserModel.id, ondelete=OnDelete.CASCADE), nullable=False, index=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), nullable=False)
-    # https://docs.sqlalchemy.org/en/20/orm/relationships.html
-    media = db.relationship("MediumModel", backref="post", order_by="MediumModel.order", cascade='delete')
+    media = db.relationship(MediumModel, backref="post", order_by="MediumModel.order", cascade='delete, delete-orphan')
 
 
 class PostSchema(SQLAlchemyAutoSchema):

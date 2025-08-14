@@ -45,9 +45,9 @@ class LikeResource(Resource):
         target_id = args[KEY_TARGET_ID]
         target_type = args[KEY_TARGET_TYPE]
         
-        if target_type == LikeType.POST.value:
+        if target_type == LikeType.POST:
             model = PostModel
-        elif target_type == LikeType.COMMENT.value:
+        elif target_type == LikeType.COMMENT:
             model = CommentModel
         else:
             raise Exception('invalid like type')
