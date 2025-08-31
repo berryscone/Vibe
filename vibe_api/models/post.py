@@ -1,7 +1,6 @@
 import uuid
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.event import listens_for
 from marshmallow_sqlalchemy.fields import Nested
 from vibe_api.db import db
 from vibe_api.models.user import UserModel

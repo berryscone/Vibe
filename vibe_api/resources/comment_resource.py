@@ -62,7 +62,6 @@ class CommentResource(Resource):
             db.session.rollback()
             return {"error": str(e)}, 500
 
-
     def delete(self, comment_id: str):
         comment = self.get_comment_or_404(comment_id)
 
