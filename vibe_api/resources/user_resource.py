@@ -1,9 +1,12 @@
 from uuid import UUID
 from typing import Tuple
+
 from email_validator import validate_email
 from flask_restful import Resource, reqparse, abort
-from vibe_api.models.user import UserModel, GenderType, user_schema, USER_NAME_LENGTH_LIMIT, USER_EMAIL_LENGTH_LIMIT
+
+from vibe_api.models.user import UserModel, UserGender, user_schema, USER_NAME_LENGTH_LIMIT, USER_EMAIL_LENGTH_LIMIT
 from vibe_api.db import db
+from vibe_api.utils.auth_util import require_auth
 
 
 KEY_NAME = 'name'
@@ -24,8 +27,14 @@ put_user_parser.add_argument(KEY_AGE, type=int)
 put_user_parser.add_argument(KEY_GENDER, type=str)
 
 class UserResource(Resource):
+    method_decorators = {
+        'get': [require_auth],
+        'put': [require_auth],
+        'delete': [require_auth],
+    }
+
     def get(self, user_id):
-        user = self.get_user_or_404(user_id)
+        user = self._get_user_or_404(user_id)
         return user_schema.dump(user), 200
 
     def post(self):
@@ -41,12 +50,12 @@ class UserResource(Resource):
             db.session.commit()
             return user_schema.dump(user), 201
         
-        except Exception as ie:
+        except Exception as e:
             db.session.rollback()
-            return {"error": str(ie)}, 500
+            return {"error": str(e)}, 500
         
     def put(self, user_id):
-        user = self.get_user_or_404(user_id)
+        user = self._get_user_or_404(user_id)
 
         try:
             name, email, age, gender = self._check_args_validity(parser=put_user_parser)
@@ -68,7 +77,7 @@ class UserResource(Resource):
             return {"error": str(ie)}, 500
 
     def delete(self, user_id):
-        user = self.get_user_or_404(user_id)
+        user = self._get_user_or_404(user_id)
 
         try:
             db.session.delete(user)
@@ -79,7 +88,7 @@ class UserResource(Resource):
             db.session.rollback()
             return {"error": str(ie)}, 500
         
-    def get_user_or_404(self, user_id: str):
+    def _get_user_or_404(self, user_id: str):
         try:
             user_uuid = UUID(user_id, version=4)
         except ValueError:
@@ -102,7 +111,7 @@ class UserResource(Resource):
         if age and age < 0:
             raise Exception('invalid age')
         
-        if gender and gender not in GenderType:
+        if gender and gender not in UserGender:
             raise Exception('invalid gender')
 
         return name, email, age, gender

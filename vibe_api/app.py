@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from vibe_api.config import ConfigProd, ConfigTest
 from vibe_api.db import db
 from vibe_api.resources.user_resource import UserResource
@@ -10,10 +11,10 @@ from vibe_api.resources.medium_resource import MediumResource
 from vibe_api.resources.post_resource import PostResource
 from vibe_api.resources.comment_resource import CommentResource
 from vibe_api.resources.like_resource import LikeResource
-
+from vibe_api.resources.auth_resource import AuthResource
 
 def add_resources(app: Flask):
-    api = Api(app)    
+    api = Api(app)
     api.add_resource(UserResource, '/user', '/user/<string:user_id>')
     api.add_resource(FollowResource, '/follow')
     api.add_resource(FollowingsResource, '/followings/<string:user_id>')
@@ -22,11 +23,13 @@ def add_resources(app: Flask):
     api.add_resource(PostResource, '/post', '/post/<string:post_id>')
     api.add_resource(CommentResource, '/comment', '/comment/<string:comment_id>')
     api.add_resource(LikeResource, '/like', '/like/<string:like_id>')
+    api.add_resource(AuthResource, "/auth/<string:provider>")
 
 
 def create_app(is_test: bool=False):
     app = Flask(__name__)
     app.config.from_object(ConfigTest if is_test else ConfigProd)
+    CORS(app, supports_credentials=True)
     db.init_app(app)
     with app.app_context():
         # TODO: use database migration tool like Alembic instead of simple create_all() for production stage
