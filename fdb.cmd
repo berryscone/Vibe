@@ -1,0 +1,1 @@
+flask -A vibe_api.app db %*

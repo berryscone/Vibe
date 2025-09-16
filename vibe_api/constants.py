@@ -8,7 +8,6 @@ NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ISSUER = os.getenv("JWT_ISSUER")
 JWT_AUDIENCE = os.getenv("JWT_AUDIENCE")
-JWT_EXPIRE_MIN = int(os.getenv("JWT_EXPIRE_MIN"))
 
 ACCESS_TOKEN_TTL_SEC = 15 * 60 * 30  # 15 minutes
 REFRESH_TOKEN_TTL_SEC = 60 * 60 * 24 * 30  # 30 days
@@ -46,14 +45,10 @@ USER_EMAIL_LENGTH_LIMIT = 254
 PROVIDE_SUB_LENGTH_LIMIT = 255
 
 
-class OnDelete(enum.StrEnum):
-    CASCADE = 'CASCADE'
-
-
 class Provider(enum.StrEnum):
     GOOGLE = "google"
-    APPLE  = "apple"
-    NAVER  = "naver"
+    APPLE = "apple"
+    NAVER = "naver"
 
 
 class UserStatus(enum.StrEnum):
@@ -67,7 +62,7 @@ class InternalErrorCode(enum.IntEnum):
         obj._value_ = value
         obj.text = text
         return obj
-    
+
     INVALID_PROVIDER = 1000, "invalid identity provider"
     INVALID_ID_TOKEN = 1001, "invalid id token"
     UNREGISTERED_USER = 1002, "unregistered user"

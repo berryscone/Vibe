@@ -3,8 +3,8 @@ import hashlib
 from datetime import datetime, timezone, timedelta
 from http import HTTPStatus
 
+from sqlalchemy import and_
 from flask_restful import Resource, reqparse, request
-from flask_sqlalchemy import and_
 
 from vibe_api.db import db
 from vibe_api.models.user import UserModel, UserStatus, user_schema
